@@ -6,7 +6,7 @@ def load_data(path):
 
     return df
 
-def clean_data(df_raw, df_truth):
+def add_timestamp(df_raw):
     # Convert column t to datetime format
     timestamp = pd.to_datetime(df_raw['t'])
 
@@ -14,18 +14,21 @@ def clean_data(df_raw, df_truth):
     timestamp = timestamp.astype('int64') // 10**9
 
     # Append timestamp to existing df
-    df_clean = df_raw
-    df_clean['timestamp'] = timestamp
+    df = df_raw
+    df['timestamp'] = timestamp
 
+    return df
+
+def add_label(df_with_timestamp, df_truth):
     # Initiate column label
-    df_clean['label'] = 0
+    df_with_timestamp['label'] = 0
 
     for i in range(len(df_truth)):
         start = df_truth.loc[i, 'start']
         end = df_truth.loc[i, 'end']
-        df_clean.loc[(df_clean['timestamp'] >= start) & (df_clean['timestamp'] <= end), 'label'] = 1
+        df_with_timestamp.loc[(df_with_timestamp['timestamp'] >= start) & (df_with_timestamp['timestamp'] <= end), 'label'] = 1
 
-    return df_clean
+    return df_with_timestamp
 
 if __name__ == '__main__':
     # Set up path
@@ -34,7 +37,16 @@ if __name__ == '__main__':
     path_truth = 'data/truth'
 
     # Raw data
-    file_raw_list = ['batch146_17_raw.csv', 'batch146_19_raw.csv', 'batch146_20_raw.csv']
+    file_raw_list = ['batch146_13_raw.csv',
+                     'batch146_15_raw.csv',
+                     'batch146_17_raw.csv',
+                     'batch146_18_raw.csv',
+                     'batch146_19_raw.csv',
+                     'batch146_20_raw.csv']
+
+    files_with_label = ['batch146_17_raw.csv',
+                        'batch146_19_raw.csv',
+                        'batch146_20_raw.csv']
 
     for file_raw in file_raw_list:
         # Log
@@ -46,12 +58,18 @@ if __name__ == '__main__':
 
         # Load data
         df_raw = load_data(os.path.join(path_raw, file_raw))
-        df_truth = load_data(os.path.join(path_truth, file_truth))
 
-        # Clean data
-        df_clean = clean_data(df_raw, df_truth)
+        # Add timestamp
+        df_with_timestamp = add_timestamp(df_raw)
+
+        # Add label to files with ground truth
+        if file_raw in files_with_label:
+            df_truth = load_data(os.path.join(path_truth, file_truth))
+            df_clean = add_label(df_with_timestamp, df_truth)
+        else:
+            df_clean = df_with_timestamp
 
         # Save file
-        df_clean.to_csv(os.path.join(path_clean, file_clean))
+        df_clean.to_csv(os.path.join(path_clean, file_clean), index=False)
 
-        print('Saved file: ', file_raw)
+        print('Saved file: ', file_clean)
