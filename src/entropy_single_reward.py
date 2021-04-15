@@ -91,6 +91,7 @@ return features_indx, name, clean_data
 
 
 # trang - assume direty data is used for the tree
+# use feature_name, clean_data
 def remove_high_correlationn(features_indx, filtered_data):
 # warining filtered_data might have different feature index
 
