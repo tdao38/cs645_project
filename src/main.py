@@ -33,5 +33,5 @@ if __name__ == '__main__':
     features_list = data_segment_entropy.columns
     Exstream_feature, Exstream_data = drop_features(aggregated_distance, aggregated_data, features_list)
 
-    # after removing correlated features we will have Exstream_cluster
-    clean_exstream = remove_correlated_features(Exstream_data, Exstream_feature, features_list, aggregated_distance)
+    # after removing correlated features (via clustering) we will have Exstream_cluster
+    Exstream_cluster = remove_correlated_features(Exstream_data, Exstream_feature, features_list, aggregated_distance)
