@@ -15,7 +15,7 @@ if __name__ == '__main__':
 
     ## calculate segment entropy
     filtered_data = select_segment(data, index_data_class_entropy)
-    data_segment_entropy = calculate_segment_entropy(filtered_data)
+    data_segment_entropy = pd.read_csv('~/cs645_project/data/segment/batch146_17_segment.csv')
 
     ## 6x1 class entropy:
     h_class = index_data_class_entropy['h_class']

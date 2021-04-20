@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 
 def mapping(index_data):
     """
@@ -9,11 +10,18 @@ def mapping(index_data):
     :param index_data: the original ground truth data frame
     :return: index_data: with added tsa, tsa, normal_start, normal_end columns
     """
+    print("Mapping data to find reference start point")
     # find the refernced index begining
     index_data['tsa'] = index_data['end'] - index_data['start'] + 1
     index_data['tsr'] = index_data['tsa']*2
     index_data['normal_start'] = index_data['start'] - index_data['tsr']
     index_data['normal_end'] = index_data['start'] - 1
+
+    # Check condition
+    index_data_sorted = index_data.sort_values(by='start').reset_index(drop=True)
+    for i in range(len(index_data_sorted)-1):
+        if index_data_sorted.normal_start[i+1] > index_data_sorted.end[i]:
+            print('row ', i+1, 'passed condition check')
 
     return index_data
 
@@ -126,20 +134,40 @@ def calculate_segment_penalty(df_feature):
     return h_segment_penalty_all
 
 if __name__ == '__main__':
-    ## read cleaned data
-    data = pd.read_csv('data/clean/batch146_17_clean.csv')
-    # read index data
-    index_data = pd.read_csv('data/truth/batch146_17_truth.csv')
+    path_clean = 'data/clean'
+    path_truth = 'data/truth'
+    path_segment = 'data/segment'
 
-    ## map index data and calculate class entropy
-    index_data_mapped = mapping(index_data)
-    index_data_class_entropy = calculate_class_entropy(index_data_mapped)
+    file_clean_list = ['batch146_17_clean.csv',
+                       'batch146_19_clean.csv',
+                       'batch146_20_clean.csv']
 
-    ## calculate segment entropy
-    filtered_data = select_segment(data, index_data_class_entropy)
-    data_segment_entropy = calculate_segment_entropy(filtered_data)
+    for file_clean in file_clean_list:
+        print('=============================================================')
+        print('Calculating file ', file_clean)
 
-    ## 6x1 class entropy:
-    h_class = index_data_class_entropy['h_class']
-    ## 6x19 class entropy:
-    h_segment = data_segment_entropy
+        # set up export files:
+        file_truth = file_clean.replace('clean', 'truth')
+        file_segment = file_clean.replace('clean', 'segment')
+
+        ## read cleaned data
+        data = pd.read_csv(os.path.join(path_clean, file_clean))
+        # read index data
+        index_data = pd.read_csv(os.path.join(path_truth, file_truth))
+
+        ## map index data and calculate class entropy
+        index_data_mapped = mapping(index_data)
+        index_data_class_entropy = calculate_class_entropy(index_data_mapped)
+
+        ## calculate segment entropy
+        filtered_data = select_segment(data, index_data_class_entropy)
+        data_segment_entropy = calculate_segment_entropy(filtered_data)
+
+        ## 6x1 class entropy:
+        h_class = index_data_class_entropy['h_class']
+        ## 6x19 segment entropy:
+        h_segment = data_segment_entropy
+
+        # Save file
+        h_segment.to_csv(os.path.join(path_segment, file_segment), index=False)
+        print('saved file ', file_segment)
