@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import math
 import os
 
 def mapping(index_data):
@@ -87,11 +88,11 @@ def calculate_segment_entropy(filtered_data):
             h_segment_no_penalty = np.sum(pi * np.log(1/pi))
             h_segment_penalty = calculate_segment_penalty(df_feature)
             h_segment = h_segment_no_penalty + h_segment_penalty
-
+            # print(df_feature.columns[0])
+            # print("h_segment_no_penalty: ", h_segment_no_penalty)
+            # print("h_segment_penalty: ", h_segment_penalty)
+            # print("h_segment: ", h_segment)
             results_df[features[j]][i] = h_segment
-            # h_segment_dict['h_segment_dict_' + str(i)][features[j]]['h_segment_no_penalty'] = h_segment_no_penalty
-            # h_segment_dict['h_segment_dict_' + str(i)][features[j]]['h_segment_penalty'] = h_segment_penalty
-
 
     return results_df
 
@@ -121,14 +122,27 @@ def calculate_segment_penalty(df_feature):
                 h_segment_penalty = np.log(number_of_segments)
                 h_segment_penalty_all += h_segment_penalty
             # If number of abnormal labels != normal labels => number of segment is twice the smaller length + 1
-            # For example: N A N A N N N N => 2*2+1=5 segment => penalty = 4*1/6*log(6) + 2/6*log(6/2)
-            # len_mix_segment = 4, len_pure_segment = 1
+            # For example: N A N A N N => 2*2+1=5 segment => penalty = 4*1/6*log(6) + 2/6*log(6/2)
+            # number_of_mixed_segment = 4
+            # number_of_pure_segment = 1 (always true)
+            # len_mixed_segment = 1 (always true)
+            # len_pure_segment = 2
             else:
-                number_of_segments = min(a, n)*2 + 1
-                len_mixed_segment = number_of_segments - 1
-                len_pure_segment = len(df_filter) - len_mixed_segment
-                h_segment_penalty = len_pure_segment * 1/len(df_filter) * np.log(len(df_filter)) + \
-                                    len_mixed_segment * 1/len(df_filter) * np.log(len(df_filter)/len_mixed_segment)
+                #### OLD CALCULATION:
+                # number_of_segments = min(a, n)*2 + 1
+                # len_mixed_segment = number_of_segments - 1
+                # len_pure_segment = len(df_filter) - len_mixed_segment
+                # h_segment_penalty = len_pure_segment * 1/len(df_filter) * np.log(len(df_filter)) + \
+                #                     len_mixed_segment * 1/len(df_filter) * np.log(len(df_filter)/len_mixed_segment)
+                # h_segment_penalty_all += h_segment_penalty
+
+                ### FIXED CALCULATION:
+                number_of_mixed_segments = min(a, n)*2
+                number_of_pure_segments = 1
+                len_mixed_segment = 1
+                len_pure_segment = len(df_filter) - len_mixed_segment * number_of_mixed_segments
+                h_segment_penalty = number_of_mixed_segments * len_mixed_segment/len(df_filter) * np.log(len(df_filter)/len_mixed_segment) + \
+                                    number_of_pure_segments * len_pure_segment/len(df_filter) * np.log(len(df_filter)/len_pure_segment)
                 h_segment_penalty_all += h_segment_penalty
 
     return h_segment_penalty_all
