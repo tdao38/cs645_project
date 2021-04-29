@@ -3,6 +3,9 @@ import numpy as np
 import math
 import os
 
+
+pd.options.mode.chained_assignment = None
+
 def mapping(index_data):
     """
     STEP 1:
@@ -89,10 +92,11 @@ def calculate_segment_entropy(filtered_data):
             h_segment_penalty = calculate_segment_penalty(df_feature)
             h_segment = h_segment_no_penalty + h_segment_penalty
             # print(df_feature.columns[0])
-            # print("h_segment_no_penalty: ", h_segment_no_penalty)
-            # print("h_segment_penalty: ", h_segment_penalty)
+            print("h_segment_no_penalty: ", h_segment_no_penalty)
+            print("h_segment_penalty: ", h_segment_penalty)
             # print("h_segment: ", h_segment)
             results_df[features[j]][i] = h_segment
+            print(features[j], ' ', df_feature['segment'].nunique(), ' segments', )
 
     return results_df
 
@@ -183,5 +187,5 @@ if __name__ == '__main__':
         h_segment = data_segment_entropy
 
         # Save file
-        h_segment.to_csv(os.path.join(path_segment, file_segment), index=False)
-        print('saved file ', file_segment)
+        # h_segment.to_csv(os.path.join(path_segment, file_segment), index=False)
+        # print('saved file ', file_segment)
