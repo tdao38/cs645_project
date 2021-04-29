@@ -2,9 +2,7 @@ import pandas as pd
 import numpy as np
 import math
 import os
-
-
-pd.options.mode.chained_assignment = None
+from entropy_reward import combine_data
 
 def mapping(index_data):
     """
@@ -29,7 +27,7 @@ def mapping(index_data):
 
     return index_data
 
-def calculate_class_entropy(index_data):
+def calculate_class_entropy(data, status = "default"):
     """
     STEP 2:
     Calculate the class entropy based on the sampled reference class
@@ -37,12 +35,29 @@ def calculate_class_entropy(index_data):
     :return: index_data: with added h_class column that represents the class entropy
     """
     # calculate the class entropy & add a new column called class_entropy
-    pa = index_data['tsa']/(index_data['tsa']+index_data['tsr'])
-    pr = index_data['tsr']/(index_data['tsa']+index_data['tsr'])
+    if status == "default":
+        pa = data['tsa']/(data['tsa']+data['tsr'])
+        pr = data['tsr']/(data['tsa']+data['tsr'])
 
-    index_data['h_class'] = pa * np.log(1/pa) + pr * np.log(1/pr)
-
-    return index_data
+        data['h_class'] = pa * np.log(1/pa) + pr * np.log(1/pr)
+        return data
+    elif status == "stability":
+        results_matrix = np.zeros((len(data), 3))
+        temp_data = pd.DataFrame(data=results_matrix, columns=("normal_start", "end", "h_class"))
+        for i in range(len(data)):
+            pr = len(data[i][data[i].label == 0]) / len(data[i])
+            pa = len(data[i][data[i].label == 1]) / len(data[i])
+            temp_data.loc[i] = [data[i].timestamp.min(), data[i].timestamp.max(),
+                                 pa * np.log(1 / pa) + pr * np.log(1 / pr)]
+        return temp_data
+    else:
+        results_matrix = np.zeros((1, 3))
+        temp_data = pd.DataFrame(data=results_matrix, columns=("normal_start", "end", "h_class"))
+        pa = len(data[data.label == 1])/len(data)
+        pr = len(data[data.label == 0])/len(data)
+        temp_data.loc[0] = [data.timestamp.min(), data.timestamp.max(),
+                                 pa * np.log(1 / pa) + pr * np.log(1 / pr)]
+        return temp_data
 
 def select_segment(data, index_data):
     """
@@ -64,41 +79,59 @@ def select_segment(data, index_data):
 
     return filtered_data
 
-def calculate_segment_entropy(filtered_data):
+def calculate_segment_entropy(filtered_data, status="default"):
     """
     STEP 4:
     Calculate the segmentation entropy for each feature in each of the 6 dataframes in filtered_data
     :param filtered_data: list of 6 data frames from STEP 3
     :return: results_df: 6x19 dataframe, storing segmentation entropy for each feature in each of the 6 dataframes
     """
+    if status =="default":
+        results_matrix = np.zeros((len(filtered_data), len(filtered_data[0].columns)-3))
+        results_df = pd.DataFrame(data=results_matrix, columns=filtered_data[0].columns[1:-2])
 
-    results_matrix = np.zeros((len(filtered_data), len(filtered_data[0].columns)-3))
-    results_df = pd.DataFrame(data=results_matrix, columns=filtered_data[0].columns[1:-2])
+        for i in range(len(filtered_data)):
+            print("Calculating segment entropy ", i + 1, " of ", len(filtered_data))
+            df = filtered_data[i]
+            features = df.columns
 
-    for i in range(len(filtered_data)):
-        print("Calculating segment entropy ", i + 1, " of ", len(filtered_data))
-        df = filtered_data[i]
+            # Initiate dictionary to save segment entropy. Key: feature.
+            for j in range(1, len(features) - 2):
+                # No mix:
+                df_feature = df[[features[j], 'label']]
+                df_feature = df_feature.sort_values(by=features[j])
+                changes = (df_feature.label != df_feature.label.shift()).cumsum()
+                df_feature['segment'] = changes
+                pi = df_feature['segment'].value_counts(normalize=True)
+                h_segment_no_penalty = np.sum(pi * np.log(1/pi))
+                h_segment_penalty = calculate_segment_penalty(df_feature)
+                h_segment = h_segment_no_penalty + h_segment_penalty
+            # print(df_feature.columns[0])
+            # print("h_segment_no_penalty: ", h_segment_no_penalty)
+            # print("h_segment_penalty: ", h_segment_penalty)
+            # print("h_segment: ", h_segment)
+                results_df[features[j]][i] = h_segment
+
+        return results_df
+    else:
+        results_matrix = np.zeros((1, len(filtered_data.columns) - 3))
+        results_df = pd.DataFrame(data=results_matrix, columns=filtered_data.columns[1:-2])
+
+        df = filtered_data
         features = df.columns
-
-        # Initiate dictionary to save segment entropy. Key: feature.
         for j in range(1, len(features) - 2):
-            # No mix:
             df_feature = df[[features[j], 'label']]
             df_feature = df_feature.sort_values(by=features[j])
             changes = (df_feature.label != df_feature.label.shift()).cumsum()
             df_feature['segment'] = changes
             pi = df_feature['segment'].value_counts(normalize=True)
-            h_segment_no_penalty = np.sum(pi * np.log(1/pi))
+            h_segment_no_penalty = np.sum(pi * np.log(1 / pi))
             h_segment_penalty = calculate_segment_penalty(df_feature)
             h_segment = h_segment_no_penalty + h_segment_penalty
-            # print(df_feature.columns[0])
-            print("h_segment_no_penalty: ", h_segment_no_penalty)
-            print("h_segment_penalty: ", h_segment_penalty)
-            # print("h_segment: ", h_segment)
-            results_df[features[j]][i] = h_segment
-            print(features[j], ' ', df_feature['segment'].nunique(), ' segments', )
+            results_df[features[j]]= h_segment
 
-    return results_df
+        return results_df
+
 
 def calculate_segment_penalty(df_feature):
     """
@@ -155,6 +188,7 @@ if __name__ == '__main__':
     path_clean = 'data/clean'
     path_truth = 'data/truth'
     path_segment = 'data/segment'
+    path_segment_aggregated = 'data/aggregated'
 
     file_clean_list = ['batch146_17_clean.csv',
                        'batch146_19_clean.csv',
@@ -187,5 +221,12 @@ if __name__ == '__main__':
         h_segment = data_segment_entropy
 
         # Save file
-        # h_segment.to_csv(os.path.join(path_segment, file_segment), index=False)
-        # print('saved file ', file_segment)
+        h_segment.to_csv(os.path.join(path_segment, file_segment), index=False)
+        print('saved file ', file_segment)
+
+        file_segment_aggregated = file_clean.replace('clean', 'aggregated')
+        aggregated_data = combine_data(filtered_data)
+        index_data = calculate_class_entropy(aggregated_data, "aggregate")
+        data_segment_entropy = calculate_segment_entropy(aggregated_data, "aggregate")
+        data_segment_entropy.to_csv(os.path.join(path_segment_aggregated , file_segment_aggregated), index=False)
+        print('saved file ', file_segment_aggregated)
