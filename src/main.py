@@ -1,6 +1,6 @@
 import pandas as pd
 from segmentation import mapping, calculate_class_entropy, select_segment, calculate_segment_entropy, calculate_segment_penalty
-from entropy_reward import calculate_D, aggreate_reward, combine_data, drop_features
+from entropy_reward import calculate_D, aggreate_reward, combine_data, drop_features, remove_monotonic_feature
 from clustering import remove_correlated_features
 
 if __name__ == '__main__':
@@ -31,10 +31,12 @@ if __name__ == '__main__':
     aggregated_data = combine_data(filtered_data)
     #list of all the features
     features_list = data_segment_entropy.columns
-    Exstream_feature, Exstream_data = drop_features(aggregated_distance, aggregated_data, features_list)
+    correlated_feature_index= remove_monotonic_feature(aggregated_data, features_list)
+    Exstream_feature, Exstream_data = drop_features(aggregated_distance, aggregated_data, features_list, correlated_feature_index)
 
     # after removing correlated features (via clustering) we will have Exstream_cluster
     Exstream_cluster = remove_correlated_features(Exstream_data, Exstream_feature, features_list, aggregated_distance)
+    print(Exstream_cluster.columns)
 
     # data = Exstream_cluster[[Exstream_cluster.columns[0], 'label']]
     # data = data.sort_values(by=Exstream_cluster.columns[0])
