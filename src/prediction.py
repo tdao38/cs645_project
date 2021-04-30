@@ -7,7 +7,7 @@ def get_prediction_range(Exstream_cluster):
     prediction_range_dict = {}
     for j in range(len(features)):
         feature = features[j]
-        predict_data = Exstream_cluster[[feature, 'label']].sort_values(by=feature)
+        predict_data = Exstream_cluster[[feature, 'label']].iloc[np.lexsort((Exstream_cluster.index, Exstream_cluster[feature]))]
         predict_data['count_0'] = np.where(predict_data['label'] == 0, 1, 0)
         predict_data['count_1'] = np.where(predict_data['label'] == 1, 1, 0)
         count_data = predict_data[[feature, 'count_0', 'count_1']].groupby(feature, as_index=False).sum()
