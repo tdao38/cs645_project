@@ -98,8 +98,8 @@ def calculate_segment_entropy(filtered_data, status="default"):
             # Initiate dictionary to save segment entropy. Key: feature.
             for j in range(1, len(features) - 2):
                 # No mix:
-                # df_feature = df[[features[j], 'label']].iloc[np.lexsort((df.index, df[features[j]]))]
-                df_feature = df[[features[j], 'label']].sort_values(by=[features[j], 'label'])
+                df_feature = df[[features[j], 'label']].iloc[np.lexsort((df.index, df[features[j]]))]
+                # df_feature = df[[features[j], 'label']].sort_values(by=[features[j], 'label'])
                 changes = (df_feature.label != df_feature.label.shift()).cumsum()
                 df_feature['segment'] = changes
                 pi = df_feature['segment'].value_counts(normalize=True)
@@ -122,8 +122,8 @@ def calculate_segment_entropy(filtered_data, status="default"):
         features = df.columns
         for j in range(1, len(features) - 2):
             df_feature = df[[features[j], 'label']].iloc[np.lexsort((df.index, df[features[j]]))]
-            df_feature = df[[features[j], 'label']].sort_values(by=[features[j], 'label'])
-            df_feature = df[[features[j], 'label']].sort_values(by=features[j])
+            # df_feature = df[[features[j], 'label']].sort_values(by=[features[j], 'label'])
+            # df_feature = df[[features[j], 'label']].sort_values(by=features[j])
             changes = (df_feature.label != df_feature.label.shift()).cumsum()
             df_feature['segment'] = changes
             pi = df_feature['segment'].value_counts(normalize=True)
