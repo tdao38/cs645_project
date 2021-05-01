@@ -1,27 +1,18 @@
 import pandas as pd
 from segmentation import mapping, calculate_class_entropy, select_segment, calculate_segment_entropy, calculate_segment_penalty
-from entropy_reward import calculate_D, aggreate_reward, combine_data, drop_features, remove_monotonic_feature
+from entropy_reward import calculate_D, aggreate_distance, combine_data, drop_features, remove_monotonic_feature
 from clustering import remove_correlated_features
 import os
 import numpy as np
 
 
-#### Stability: Amy
-# 6 anomalies: resample 10 times for each anomaly, sample size: 20% from A, 20% from N, without replacement
-# Repeat exstream for each sample
-# 10 lists of features for each anomaly (60 lists in total)
-# list 1: A B C
-# list 2: B C D
-# => A B B C C D
-# => A: 1/6, B: 2/6, C: 2/6, D: 1/6
-# H:  - (1/6 * log_2(1/6) + 2/6 * log_2(2/6) + .....)
-# 1 stablity for each anomaly => 6 stability for each batch, calculate for all 3 training batches
-# Create a table for each batch (3 tables) with 2 columns: average feature size + average stability
-# each table has average feature size and stability for each anomaly (7 rows) - average at the end
-# average stability: go through each 10 list to count how many times each feature appears
-# run this outside of main.py
-
 def random_data(filtered_data):
+    """
+    This function randomly select 80% of the data
+    :param filtered_data: list of data
+    :return:
+    list of data
+    """
     new_filtered_data = []
     for i in range(len(filtered_data)):
         normal= filtered_data[i][filtered_data[i].label == 0]
@@ -37,6 +28,14 @@ def random_data(filtered_data):
     return new_filtered_data
 
 def stability(filtered_data, features_list, iteration):
+    """
+    This function repeatedly sample the data and calculate the average feature size and stability score for each anomalies
+    :param filtered_data: list of data
+    :param features_list: list of features
+    :param iteration: number of iteration
+    :return:
+    stability matrix and feature list
+    """
     feature_list_result = []
     for i in range(iteration):
         new_data = random_data(filtered_data)
@@ -64,6 +63,12 @@ def stability(filtered_data, features_list, iteration):
     return stability_matrix, feature_list_result
 
 def stats(temp):
+    """
+    This function calculate the average feature size and stability
+    :param temp: list of feature for given anomalies
+    :return:
+    average feature size and stability value
+    """
     total=np.zeros(len(temp))
     for i in range(len(temp)):
         total[i]=len(temp[i])
@@ -73,6 +78,12 @@ def stats(temp):
     return total.mean(), stability
 
 def calculate_stability(aggregate_list):
+    """
+    This function calculate stability
+    :param aggregate_list: list of feature for given anomalies
+    :return:
+    stability
+    """
     unique, counts = np.unique(aggregate_list, return_counts=True)
     counts = counts/len(aggregate_list)
     stability =  -(counts * np.log2(counts)).sum()
@@ -87,9 +98,10 @@ if __name__ == '__main__':
     path_segment = 'data/segment'
     path_output = 'data/stability'
 
-    file_clean_list = ['batch146_17_clean.csv',
-                       'batch146_19_clean.csv',
-                       'batch146_20_clean.csv']
+
+    file_clean_list = ['batch146_17_clean.csv'
+                      'batch146_19_clean.csv',
+                      'batch146_20_clean.csv']
 
     iteration = 20
     for file_clean in file_clean_list:
@@ -112,6 +124,8 @@ if __name__ == '__main__':
         ## calculate segment entropy
         filtered_data = select_segment(data, index_data_class_entropy)
         features_list = filtered_data[0].columns[1:-2].values
+
+        ## start stability calculation
         array, list = stability(filtered_data,features_list, iteration)
         ## convert your array into a dataframe
         df = pd.DataFrame(array.T)
@@ -120,10 +134,8 @@ if __name__ == '__main__':
         df["end"] = index_data["end"]
         print(list)
 
-        ## save to xlsx file
-
+        ## save the stability result to cvs file
         filepath = os.path.join(path_output, file_clean[:11]+'_stability.csv')
-
         df.to_csv(filepath, index=False)
 
 
