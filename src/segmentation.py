@@ -98,18 +98,19 @@ def calculate_segment_entropy(filtered_data, status="default"):
             # Initiate dictionary to save segment entropy. Key: feature.
             for j in range(1, len(features) - 2):
                 # No mix:
-                df_feature = df[[features[j], 'label']]
-                df_feature = df_feature.sort_values(by=features[j])
+                df_feature = df[[features[j], 'label']].iloc[np.lexsort((df.index, df[features[j]]))]
+                # df_feature = df[[features[j], 'label']].sort_values(by=[features[j], 'label'])
                 changes = (df_feature.label != df_feature.label.shift()).cumsum()
                 df_feature['segment'] = changes
                 pi = df_feature['segment'].value_counts(normalize=True)
                 h_segment_no_penalty = np.sum(pi * np.log(1/pi))
                 h_segment_penalty = calculate_segment_penalty(df_feature)
                 h_segment = h_segment_no_penalty + h_segment_penalty
-            # print(df_feature.columns[0])
-            # print("h_segment_no_penalty: ", h_segment_no_penalty)
-            # print("h_segment_penalty: ", h_segment_penalty)
-            # print("h_segment: ", h_segment)
+                print(df_feature.columns[0])
+                print(df_feature['segment'].nunique(), " segments")
+                print("h_segment_no_penalty: ", h_segment_no_penalty)
+                print("h_segment_penalty: ", h_segment_penalty)
+                print("h_segment: ", h_segment)
                 results_df[features[j]][i] = h_segment
 
         return results_df
@@ -120,8 +121,9 @@ def calculate_segment_entropy(filtered_data, status="default"):
         df = filtered_data
         features = df.columns
         for j in range(1, len(features) - 2):
-            df_feature = df[[features[j], 'label']]
-            df_feature = df_feature.sort_values(by=features[j])
+            df_feature = df[[features[j], 'label']].iloc[np.lexsort((df.index, df[features[j]]))]
+            # df_feature = df[[features[j], 'label']].sort_values(by=[features[j], 'label'])
+            # df_feature = df[[features[j], 'label']].sort_values(by=features[j])
             changes = (df_feature.label != df_feature.label.shift()).cumsum()
             df_feature['segment'] = changes
             pi = df_feature['segment'].value_counts(normalize=True)
@@ -129,6 +131,11 @@ def calculate_segment_entropy(filtered_data, status="default"):
             h_segment_penalty = calculate_segment_penalty(df_feature)
             h_segment = h_segment_no_penalty + h_segment_penalty
             results_df[features[j]]= h_segment
+            print(df_feature.columns[0])
+            print(df_feature['segment'].nunique(), " segments")
+            print("h_segment_no_penalty: ", h_segment_no_penalty)
+            print("h_segment_penalty: ", h_segment_penalty)
+            print("h_segment: ", h_segment)
 
         return results_df
 
@@ -207,26 +214,26 @@ if __name__ == '__main__':
         # read index data
         index_data = pd.read_csv(os.path.join(path_truth, file_truth))
 
-        ## map index data and calculate class entropy
+        # map index data and calculate class entropy
         index_data_mapped = mapping(index_data)
         index_data_class_entropy = calculate_class_entropy(index_data_mapped)
 
         ## calculate segment entropy
         filtered_data = select_segment(data, index_data_class_entropy)
-        data_segment_entropy = calculate_segment_entropy(filtered_data)
-
-        ## 6x1 class entropy:
-        h_class = index_data_class_entropy['h_class']
-        ## 6x19 segment entropy:
-        h_segment = data_segment_entropy
-
-        # Save file
-        h_segment.to_csv(os.path.join(path_segment, file_segment), index=False)
-        print('saved file ', file_segment)
+        # data_segment_entropy = calculate_segment_entropy(filtered_data)
+        #
+        # ## 6x1 class entropy:
+        # h_class = index_data_class_entropy['h_class']
+        # ## 6x19 segment entropy:
+        # h_segment = data_segment_entropy
+        #
+        # # Save file
+        # h_segment.to_csv(os.path.join(path_segment, file_segment), index=False)
+        # print('saved file ', file_segment)
 
         file_segment_aggregated = file_clean.replace('clean', 'aggregated')
         aggregated_data = combine_data(filtered_data)
         index_data = calculate_class_entropy(aggregated_data, "aggregate")
         data_segment_entropy = calculate_segment_entropy(aggregated_data, "aggregate")
-        data_segment_entropy.to_csv(os.path.join(path_segment_aggregated , file_segment_aggregated), index=False)
+        # data_segment_entropy.to_csv(os.path.join(path_segment_aggregated , file_segment_aggregated), index=False)
         print('saved file ', file_segment_aggregated)
