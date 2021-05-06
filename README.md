@@ -58,7 +58,7 @@ python3 src/clean.py
 python3 src/aggregated_data_creation.py
 ```
 
-## RUNNING STUFF
+## Main implementation
 1. Since each training batch has a separate prediction batch and using different threshold of features, we use 3 different scripts to train and predict each batch:
 
 
@@ -81,4 +81,14 @@ python3 src/stability.py
 ```
 3. Extension (Trang)
 
+## Visualization
+1. To generate figure 15 
 
+```
+python3 src/plot_fig15.py
+```
+2. To generate feature vs time plots
+
+```
+python3 src/plot_time.py
+```
