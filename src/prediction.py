@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 
 def get_prediction_range(Exstream_cluster):
+
     """
     Pass in Exstream_cluster data to get a dictionary of prediction range values with start, end interval of a
     abnormal period
@@ -11,13 +12,16 @@ def get_prediction_range(Exstream_cluster):
     features = Exstream_cluster.columns.tolist()
     features.remove('label')
     prediction_range_dict = {}
+    CPU_feature_list = ['1_diff_node5_CPU_ALL_Idle%','1_diff_node6_CPU_ALL_Idle%', '1_diff_node7_CPU_ALL_Idle%',
+                       '1_diff_node8_CPU_ALL_Idle%']
+
     for j in range(len(features)):
         feature = features[j]
         predict_data = Exstream_cluster[[feature, 'label']].iloc[np.lexsort((Exstream_cluster.index, Exstream_cluster[feature]))]
         predict_data['count_0'] = np.where(predict_data['label'] == 0, 1, 0)
         predict_data['count_1'] = np.where(predict_data['label'] == 1, 1, 0)
         count_data = predict_data[[feature, 'count_0', 'count_1']].groupby(feature, as_index=False).sum()
-        count_data['final_label'] = np.where(count_data['count_1'] > 0, 1, 0)
+        count_data['final_label'] = np.where(count_data['count_1'] > count_data['count_0'] , 1, 0)
 
         current_state = 'normal'
         start = []
@@ -48,8 +52,12 @@ def get_prediction_range(Exstream_cluster):
         prediction_range = pd.DataFrame()
         prediction_range['start'] = start
         prediction_range['end'] = end
+        if feature in CPU_feature_list:
+            for feature_one in CPU_feature_list:
+                prediction_range_dict[feature_one] = prediction_range
+        else:
+            prediction_range_dict[feature] = prediction_range
 
-        prediction_range_dict[feature] = prediction_range
 
     return prediction_range_dict
 

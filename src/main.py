@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from segmentation import mapping, calculate_class_entropy, select_segment, calculate_segment_entropy, calculate_segment_penalty
-from entropy_reward import calculate_D, aggreate_reward, combine_data, drop_features, remove_monotonic_feature
+from entropy_reward import calculate_D, aggreate_distance, combine_data, drop_features, remove_monotonic_feature
 from clustering import remove_correlated_features
 from prediction import get_prediction_range
 
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     distance = calculate_D(h_segment, h_class)
     # adding reward for different features
     # numpy array len(feature) x 1
-    aggregated_distance = aggreate_reward(distance)
+    aggregated_distance = aggreate_distance(distance)
     # convert the list of data frames to one data
     aggregated_data = combine_data(filtered_data)
     #list of all the features
