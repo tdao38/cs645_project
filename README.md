@@ -53,22 +53,24 @@ Type "help", "copyright", "credits" or "license" for more information.
 ```
 python3 src/clean.py
 ```
-3. To save training time, we calculated distance and saved it to a csv file for each batch 
+4. To save training time, we calculated distance and saved it to a csv file for each batch 
 ```
 python3 src/aggregated_data_creation.py
 ```
 
 ## RUNNING STUFF
 1. Since each training batch has a separate prediction batch and using different threshold of features, we use 3 different scripts to train and predict each batch:
-   1.1. Train batch 17, predict batch 13
+
+
+Train batch 17, predict batch 13
 ```
 python3 src/prediction_batch_1713.py
 ```
-   1.2. Train batch 19, predict batch 18
+Train batch 19, predict batch 18
 ```
 python3 src/prediction_batch_1918.py
 ```
-   1.3. Train batch 20, predict batch 15
+Train batch 20, predict batch 15
 ```
 python3 src/prediction_batch_2015.py
 ```
