@@ -26,14 +26,14 @@ Type "help", "copyright", "credits" or "license" for more information.
 ```
 ## Data Preparation
 1. The `data` directory is already created and is already storing all the data we use in this project. It is ready to be used by just cloning this repo. However, if users want to run from scratch, then create following directory. 
-    1. data/aggregated
-    2. data/clean
-    3. data/MLpreds
-    4. data/raw
-    5. data/segment
-    6. data/stability
-    7. data/test 
-    8. data/truth
+    1. `data/aggregated` - contains the aggregated segmentation entropy result
+    2. `data/clean`- contains data after cleaning
+    3. `data/MLpreds` - contains prediction results from machine learning model on original data
+    4. `data/raw`- contains raw data
+    5. `data/segment`- contains the segmented segmentation entropy result
+    6. `data/stability`- contains stability calculation
+    7. `data/test` - contains test interval data
+    8. `data/truth` - contains ground truth label intervals for training data
 
 1. clean up (thu)
 2. To save training time, we calculated distance and saved it to a csv file for each batch 
