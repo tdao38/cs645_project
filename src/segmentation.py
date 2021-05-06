@@ -151,12 +151,15 @@ def calculate_segment_penalty(df_feature):
     # Loop through the unique values in df_feature
     unique_vals = pd.unique(df_feature[df_feature.columns[0]])
     h_segment_penalty_all = 0
-
+    no_of_mixed_segments = 0
+    mix_segment_length = []
     # Calculate the segment penalty for each unique value
     for i in range(len(unique_vals)):
         df_filter = df_feature[df_feature[df_feature.columns[0]] == unique_vals[i]]
         # Only calculate the segment penalty if the unique values contain both label (0, 1)
         if len(df_filter.label.unique()) > 1:
+            mix_segment_length.append(len(df_filter))
+            # print("mixed segment length: ", len(df_filter))
             a = sum(df_filter['label'] == 1)
             n = len(df_filter) - a
             # If number of abnormal labels = normal labels => number of segment is twice the length
@@ -172,13 +175,6 @@ def calculate_segment_penalty(df_feature):
             # len_mixed_segment = 1 (always true)
             # len_pure_segment = 2
             else:
-                #### OLD CALCULATION:
-                # number_of_segments = min(a, n)*2 + 1
-                # len_mixed_segment = number_of_segments - 1
-                # len_pure_segment = len(df_filter) - len_mixed_segment
-                # h_segment_penalty = len_pure_segment * 1/len(df_filter) * np.log(len(df_filter)) + \
-                #                     len_mixed_segment * 1/len(df_filter) * np.log(len(df_filter)/len_mixed_segment)
-                # h_segment_penalty_all += h_segment_penalty
 
                 ### FIXED CALCULATION:
                 number_of_mixed_segments = min(a, n)*2
@@ -188,7 +184,12 @@ def calculate_segment_penalty(df_feature):
                 h_segment_penalty = number_of_mixed_segments * len_mixed_segment/len(df_filter) * np.log(len(df_filter)/len_mixed_segment) + \
                                     number_of_pure_segments * len_pure_segment/len(df_filter) * np.log(len(df_filter)/len_pure_segment)
                 h_segment_penalty_all += h_segment_penalty
-
+                # print('a: ', a, ", n: ", n)
+            no_of_mixed_segments += 1
+    print("Number of mixed segments: ", no_of_mixed_segments)
+    print("Max mixed segments length: ", max(mix_segment_length))
+    print("Min mixed segments length: ", min(mix_segment_length))
+    print("Avg mixed segments length: ", sum(mix_segment_length)/len(mix_segment_length))
     return h_segment_penalty_all
 
 if __name__ == '__main__':
