@@ -1,9 +1,10 @@
 import pandas as pd
 import os
-from segmentation import mapping, calculate_class_entropy, select_segment, calculate_segment_entropy, calculate_segment_penalty
-from entropy_reward import calculate_D, aggreate_reward, combine_data, drop_features, remove_monotonic_feature
-from clustering import remove_correlated_features
 import matplotlib.pyplot as plt
+from segmentation import mapping, calculate_class_entropy, select_segment, calculate_segment_entropy, calculate_segment_penalty
+from entropy_reward import calculate_D, aggreate_distance, combine_data, drop_features, remove_monotonic_feature
+from clustering import remove_correlated_features
+
 
 pd.options.mode.chained_assignment = None
 
