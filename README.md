@@ -25,13 +25,15 @@ Type "help", "copyright", "credits" or "license" for more information.
 (venv) ✿ 12:11♡ pip install -r requirements.txt
 ```
 ## Data Preparation
-1. Create following directory
-    1. data/clean
-    2. data/aggregated
+1. The `data` directory is already created and is already storing all the data we use in this project. It is ready to be used by just cloning this repo. However, if users want to run from scratch, then create following directory. 
+    1. data/aggregated
+    2. data/clean
     3. data/MLpreds
-    4. data/stability
-    5. data/test 
-    6. data/truth
+    4. data/raw
+    5. data/segment
+    6. data/stability
+    7. data/test 
+    8. data/truth
 
 1. clean up (thu)
 2. To save training time, we calculated distance and saved it to a csv file for each batch 
