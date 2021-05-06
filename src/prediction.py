@@ -22,7 +22,7 @@ def get_prediction_range(Exstream_cluster):
         predict_data['count_0'] = np.where(predict_data['label'] == 0, 1, 0)
         predict_data['count_1'] = np.where(predict_data['label'] == 1, 1, 0)
         count_data = predict_data[[feature, 'count_0', 'count_1']].groupby(feature, as_index=False).sum()
-        count_data['final_label'] = np.where(count_data['count_1'] > count_data['count_0'] , 1, 0)
+        count_data['final_label'] = np.where(count_data['count_1'] > 0 , 1, 0)
 
         current_state = 'normal'
         start = []
