@@ -10,6 +10,8 @@ from sklearn.metrics import precision_score, recall_score, confusion_matrix, \
 
 pd.options.mode.chained_assignment = None
 
+# shiqiGao shiqigao@umass.edu
+# Thu Dao tdao@umass.edu
 if __name__ == '__main__':
     ## read cleaned data
     data = pd.read_csv('./data/clean/batch146_20_clean.csv')

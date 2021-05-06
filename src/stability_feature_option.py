@@ -7,6 +7,7 @@ from entropy_reward import calculate_D, aggreate_distance, combine_data, drop_fe
 from prediction import get_prediction_range, predict, predict_interval
 
 # shiqiGao shiqigao@umass.edu
+# Thu Dao tdao@umass.edu
 pd.options.mode.chained_assignment = None
 
 # batch 17, "driver_StreamingMetrics_streaming_lastCompletedBatch_totalDelay_value", "1_diff_node7_CPU_ALL_Idle%"

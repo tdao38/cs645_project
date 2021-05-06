@@ -10,6 +10,7 @@ from sklearn.metrics import precision_score, recall_score, confusion_matrix, \
     classification_report, accuracy_score, f1_score
 
 # shiqiGao shiqigao@umass.edu
+# Thu Dao tdao@umass.edu
 pd.options.mode.chained_assignment = None
 
 if __name__ == '__main__':
