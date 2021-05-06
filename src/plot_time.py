@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Thu Dao tdao@umass.edu
 if __name__ == '__main__':
     print('==============================================================================')
     print('Plot each feature vs time')
