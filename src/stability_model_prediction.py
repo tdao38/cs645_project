@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 import os
-from segmentation import mapping, calculate_class_entropy, select_segment, calculate_segment_entropy, calculate_segment_penalty
+from segmentation import mapping, calculate_class_entropy, select_segment, calculate_segment_entropy, \
+    calculate_segment_penalty
 from entropy_reward import calculate_D, aggreate_distance, combine_data, drop_features, remove_monotonic_feature
 from prediction import get_prediction_range, predict, predict_interval
 
@@ -27,8 +28,9 @@ if __name__ == '__main__':
 
     aggregated_data = combine_data(filtered_data)
 
-    Exstream_cluster = aggregated_data[["driver_StreamingMetrics_streaming_lastCompletedBatch_totalDelay_value", "1_diff_node7_CPU_ALL_Idle%",
-                                        "label"]]
+    Exstream_cluster = aggregated_data[
+        ["driver_StreamingMetrics_streaming_lastCompletedBatch_totalDelay_value", "1_diff_node7_CPU_ALL_Idle%",
+         "label"]]
     ### Prediction
     ### Get a dictionary of prediction ranges for each feature
     prediction_range_dict = get_prediction_range(Exstream_cluster)

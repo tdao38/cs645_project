@@ -1,12 +1,14 @@
 import pandas as pd
 import numpy as np
 import os
-from segmentation import mapping, calculate_class_entropy, select_segment, calculate_segment_entropy, calculate_segment_penalty
+from segmentation import mapping, calculate_class_entropy, select_segment, calculate_segment_entropy, \
+    calculate_segment_penalty
 from entropy_reward import calculate_D, aggreate_distance, combine_data, drop_features, remove_monotonic_feature
 from clustering import remove_correlated_features
 from prediction import get_prediction_range, predict, predict_interval
 from sklearn.metrics import precision_score, recall_score, confusion_matrix, \
     classification_report, accuracy_score, f1_score
+
 # shiqiGao shiqigao@umass.edu
 pd.options.mode.chained_assignment = None
 
@@ -20,7 +22,7 @@ if __name__ == '__main__':
     aggregated_data = combine_data(filtered_data)
     index_data = calculate_class_entropy(aggregated_data, "aggregate")
     # uncommented the code below if you dont have aggregtaed.csv
-    #data_segment_entropy = calculate_segment_entropy(aggregated_data, "aggregate")
+    # data_segment_entropy = calculate_segment_entropy(aggregated_data, "aggregate")
     data_segment_entropy = pd.read_csv('./data/aggregated/batch146_17_aggregated.csv')
     distance = calculate_D(data_segment_entropy, index_data['h_class'])
     features_list = data_segment_entropy.columns
@@ -66,4 +68,3 @@ if __name__ == '__main__':
     print(predicted_interval)
     predicted_interval_ml = predict_interval(predicted_data_ml, test_interval)
     print(predicted_interval_ml)
-

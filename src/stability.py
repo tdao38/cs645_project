@@ -1,9 +1,12 @@
 import pandas as pd
-from segmentation import mapping, calculate_class_entropy, select_segment, calculate_segment_entropy, calculate_segment_penalty
+from segmentation import mapping, calculate_class_entropy, select_segment, calculate_segment_entropy, \
+    calculate_segment_penalty
 from entropy_reward import calculate_D, aggreate_distance, combine_data, drop_features, remove_monotonic_feature
 from clustering import remove_correlated_features
 import os
 import numpy as np
+
+
 # shiqiGao shiqigao@umass.edu
 
 def random_data(filtered_data):
@@ -15,7 +18,7 @@ def random_data(filtered_data):
     """
     new_filtered_data = []
     for i in range(len(filtered_data)):
-        normal= filtered_data[i][filtered_data[i].label == 0]
+        normal = filtered_data[i][filtered_data[i].label == 0]
         abnomral = filtered_data[i][filtered_data[i].label == 1]
         remove_normal = int(len(normal) * 0.2)
         remove_abnormal = int(len(abnomral) * 0.2)
@@ -23,9 +26,10 @@ def random_data(filtered_data):
         drop_indices_abnormal = np.random.choice(abnomral.index, remove_abnormal, replace=False)
         normal_random = normal.drop(drop_indices_normal)
         abnormal_random = abnomral.drop(drop_indices_abnormal)
-        new_filtered_data.append(pd.concat([normal_random , abnormal_random]))
+        new_filtered_data.append(pd.concat([normal_random, abnormal_random]))
 
     return new_filtered_data
+
 
 def stability(filtered_data, features_list, iteration):
     """
@@ -45,11 +49,13 @@ def stability(filtered_data, features_list, iteration):
         distance = calculate_D(data_segment_entropy, index_data['h_class'])
         for j in range(len(distance)):
             correlated_feature_index = remove_monotonic_feature(filtered_data[j], features_list)
-            Exstream_feature, Exstream_data = drop_features(distance[j,:], filtered_data[j], features_list, correlated_feature_index)
-            if len(Exstream_feature)==1:
+            Exstream_feature, Exstream_data = drop_features(distance[j, :], filtered_data[j], features_list,
+                                                            correlated_feature_index)
+            if len(Exstream_feature) == 1:
                 feature_list_result.append(Exstream_data.columns[:-1].values)
             else:
-                Exstream_cluster = remove_correlated_features(Exstream_data, Exstream_feature, features_list, distance[j,:])
+                Exstream_cluster = remove_correlated_features(Exstream_data, Exstream_feature, features_list,
+                                                              distance[j, :])
                 feature_list_result.append(Exstream_cluster.columns[:-1].values)
 
     stability_matrix = np.zeros((2, len(distance)))
@@ -62,6 +68,7 @@ def stability(filtered_data, features_list, iteration):
 
     return stability_matrix, feature_list_result
 
+
 def stats(temp):
     """
     This function calculate the average feature size and stability
@@ -69,13 +76,14 @@ def stats(temp):
     :return:
     average feature size and stability value
     """
-    total=np.zeros(len(temp))
+    total = np.zeros(len(temp))
     for i in range(len(temp)):
-        total[i]=len(temp[i])
+        total[i] = len(temp[i])
     aggregate = np.concatenate(temp)
     stability = calculate_stability(aggregate)
 
     return total.mean(), stability
+
 
 def calculate_stability(aggregate_list):
     """
@@ -85,8 +93,8 @@ def calculate_stability(aggregate_list):
     stability
     """
     unique, counts = np.unique(aggregate_list, return_counts=True)
-    counts = counts/len(aggregate_list)
-    stability =  -(counts * np.log2(counts)).sum()
+    counts = counts / len(aggregate_list)
+    stability = -(counts * np.log2(counts)).sum()
 
     return stability
 
@@ -98,10 +106,9 @@ if __name__ == '__main__':
     path_segment = 'data/segment'
     path_output = 'data/stability'
 
-
     file_clean_list = ['batch146_17_clean.csv',
-                      'batch146_19_clean.csv',
-                      'batch146_20_clean.csv']
+                       'batch146_19_clean.csv',
+                       'batch146_20_clean.csv']
 
     iteration = 20
     for file_clean in file_clean_list:
@@ -126,7 +133,7 @@ if __name__ == '__main__':
         features_list = filtered_data[0].columns[1:-2].values
 
         ## start stability calculation
-        array, list = stability(filtered_data,features_list, iteration)
+        array, list = stability(filtered_data, features_list, iteration)
         ## convert your array into a dataframe
         df = pd.DataFrame(array.T)
         df.columns = ["avg_size", "stability"]
@@ -135,10 +142,5 @@ if __name__ == '__main__':
         print(list)
 
         ## save the stability result to cvs file
-        filepath = os.path.join(path_output, file_clean[:11]+'_stability.csv')
+        filepath = os.path.join(path_output, file_clean[:11] + '_stability.csv')
         df.to_csv(filepath, index=False)
-
-
-
-
-
