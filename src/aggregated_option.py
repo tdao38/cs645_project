@@ -7,7 +7,7 @@ from clustering import remove_correlated_features
 from prediction import get_prediction_range, predict, predict_interval
 from sklearn.metrics import precision_score, recall_score, confusion_matrix, \
     classification_report, accuracy_score, f1_score
-
+# shiqiGao shiqigao@umass.edu
 pd.options.mode.chained_assignment = None
 
 if __name__ == '__main__':
@@ -19,8 +19,9 @@ if __name__ == '__main__':
     filtered_data = select_segment(data, index_data_class_entropy)
     aggregated_data = combine_data(filtered_data)
     index_data = calculate_class_entropy(aggregated_data, "aggregate")
-    data_segment_entropy = pd.read_csv('./data/aggregated/batch146_17_aggregated.csv')
+    # uncommented the code below if you dont have aggregtaed.csv
     #data_segment_entropy = calculate_segment_entropy(aggregated_data, "aggregate")
+    data_segment_entropy = pd.read_csv('./data/aggregated/batch146_17_aggregated.csv')
     distance = calculate_D(data_segment_entropy, index_data['h_class'])
     features_list = data_segment_entropy.columns
     correlated_feature_index = remove_monotonic_feature(aggregated_data, features_list)
