@@ -1,10 +1,8 @@
 import pandas as pd
 import os
 
-# TODO:
-# add the abnromal index
 
-
+# Thu Dao tdao@umass.edu
 def load_data(path):
     df = pd.read_csv(path)
 

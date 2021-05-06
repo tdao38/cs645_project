@@ -9,6 +9,7 @@ from sklearn.metrics import precision_score, recall_score, confusion_matrix, \
 
 pd.options.mode.chained_assignment = None
 
+# Thu Dao tdao@umass.edu
 if __name__ == '__main__':
     print('==============================================================================')
     print('Training Batch 20')

@@ -3,7 +3,7 @@ import pandas as pd
 
 from segmentation import calculate_segment_entropy, calculate_segment_penalty
 
-
+# Thu Dao tdao@umass.edu
 if __name__ == '__main__':
     # Fake column, won't be used, won't be used
     time = np.repeat(0, 3000)

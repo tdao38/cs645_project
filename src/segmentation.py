@@ -4,6 +4,7 @@ import math
 import os
 from entropy_reward import combine_data
 
+# Thu Dao tdao@umass.edu
 def mapping(index_data):
     """
     STEP 1:
