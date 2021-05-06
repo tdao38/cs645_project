@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from segmentation import mapping, calculate_class_entropy, select_segment, calculate_segment_entropy, calculate_segment_penalty
-from entropy_reward import calculate_D, aggreate_reward, combine_data, drop_features, remove_monotonic_feature
+from entropy_reward import calculate_D, aggreate_distance, combine_data, drop_features, remove_monotonic_feature
 from clustering import remove_correlated_features
 from prediction import get_prediction_range, predict, predict_interval
 from sklearn.metrics import precision_score, recall_score, confusion_matrix, \
