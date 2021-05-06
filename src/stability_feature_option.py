@@ -13,7 +13,6 @@ pd.options.mode.chained_assignment = None
 # batch 19, "driver_StreamingMetrics_streaming_lastCompletedBatch_totalDelay_value" ,  "driver_StreamingMetrics_streaming_lastCompletedBatch_processingDelay_value"
 # batch 20, "driver_StreamingMetrics_streaming_lastCompletedBatch_processingDelay_value",  "1_diff_node7_CPU_ALL_Idle%"
 
-
 if __name__ == '__main__':
     data = pd.read_csv('./data/clean/batch146_17_clean.csv')
     # read index data
