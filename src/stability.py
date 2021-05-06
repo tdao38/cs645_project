@@ -103,7 +103,6 @@ if __name__ == '__main__':
 
     path_clean = 'data/clean'
     path_truth = 'data/truth'
-    path_segment = 'data/segment'
     path_output = 'data/stability'
 
     file_clean_list = ['batch146_17_clean.csv',
@@ -117,14 +116,13 @@ if __name__ == '__main__':
 
         # set up export files:
         file_truth = file_clean.replace('clean', 'truth')
-        file_segment = file_clean.replace('clean', 'segment')
 
         ## read cleaned data
         data = pd.read_csv(os.path.join(path_clean, file_clean))
         # read index data
         index_data = pd.read_csv(os.path.join(path_truth, file_truth))
 
-        ## map index data and calculate class entropy
+        ## map index datapyt and calculate class entropy
         index_data_mapped = mapping(index_data)
         index_data_class_entropy = calculate_class_entropy(index_data_mapped)
 
