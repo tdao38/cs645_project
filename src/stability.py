@@ -4,7 +4,7 @@ from entropy_reward import calculate_D, aggreate_distance, combine_data, drop_fe
 from clustering import remove_correlated_features
 import os
 import numpy as np
-
+# shiqiGao shiqigao@umass.edu
 
 def random_data(filtered_data):
     """
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     path_output = 'data/stability'
 
 
-    file_clean_list = ['batch146_17_clean.csv'
+    file_clean_list = ['batch146_17_clean.csv',
                       'batch146_19_clean.csv',
                       'batch146_20_clean.csv']
 

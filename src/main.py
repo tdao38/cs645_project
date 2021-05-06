@@ -30,7 +30,7 @@ if __name__ == '__main__':
     distance = calculate_D(h_segment, h_class)
     # adding reward for different features
     # numpy array len(feature) x 1
-    aggregated_distance = aggreate_reward(distance)
+    aggregated_distance = aggreate_distance(distance)
     # convert the list of data frames to one data
     aggregated_data = combine_data(filtered_data)
     #list of all the features
