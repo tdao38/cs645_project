@@ -6,18 +6,15 @@
 ## Generate ROC curve graph, and Feature Importance graph
 
 import os
-from src.config import get_project_root
-ROOT_DIR = get_project_root()
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier
-from sklearn.metrics import precision_score, recall_score, confusion_matrix, \
-    classification_report, accuracy_score, f1_score
 from sklearn import metrics
 from xgboost import plot_importance
 from matplotlib import pyplot as plt
 from extensions_utils import *
+ROOT_DIR = get_project_root()
 
 if __name__ == '__main__':
     print('==============================================================================')

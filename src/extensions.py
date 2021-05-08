@@ -4,8 +4,6 @@
 ## Extensions - Anomaly Detection Algorithm
 ## Train/Test split and Model training will be done on batch 17 only
 import os
-from src.config import get_project_root
-ROOT_DIR = get_project_root()
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -16,6 +14,7 @@ from sklearn.ensemble import RandomForestClassifier
 import tensorflow as tf
 from tensorflow import keras
 from extensions_utils import *
+ROOT_DIR = get_project_root()
 
 if __name__ == '__main__':
     print('==============================================================================')
