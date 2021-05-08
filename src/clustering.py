@@ -1,9 +1,13 @@
-from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
+# Author: Trang Tran
+# Email: ttrang@umass.edu
+
+from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.spatial.distance import squareform
 import pandas as pd
 
 # Clustering using hierarchy linkage from SciPy
 # https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html
+
 def remove_correlated_features(clean_data, clean_feature, features_lst, aggregated_dist, threshold=0.95):
     """
     This function calculates the pairwise correlation (absolute values) between features using the standard
@@ -18,11 +22,11 @@ def remove_correlated_features(clean_data, clean_feature, features_lst, aggregat
     Final clustered data for the logical model, where only the features with highest reward from each cluster are kept
     """
     features = clean_data.iloc[:, :-1]
-    # Calculate the correlation matrix (absolute value version), which shows how close each feature is (range 0,1)
+    # Calculate the correlation matrix (in absolute value), which shows how close each feature is (range 0,1)
     corr_matrix = features.corr().abs()
 
     # Calculate how far each feature is (range 0,1)
-    dissimilarity = 1 - abs(corr_matrix)
+    dissimilarity = 1 - corr_matrix
 
     # hierarchy linkage. Method 'complete' is the the Farthest Point Algorithm
     Z = linkage(squareform(dissimilarity), 'complete')
