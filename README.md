@@ -35,6 +35,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 │   ├── stability - contains stability calculation
 │   ├── test - contains test interval data
 │   └── truth - contains ground truth label intervals for training data
+├── extensions_plot - contains plots generated from our extension: feature importance and ROC curve
 ├── prediction_result
 │   ├── exstream - contains prediction results for test intervals using exstream model
 │   └── extension - contains prediction results for test intervals using machine learning extension model
