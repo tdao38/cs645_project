@@ -79,7 +79,9 @@ python3 src/prediction_batch_2015.py
 ```
 python3 src/stability.py
 ```
-3. Extension (Trang)
+3. Extension
+
+All three extension models can be found in the `src/extensions.py` script.
 
 ## Visualization
 1. To generate figure 15 
@@ -92,3 +94,4 @@ python3 src/plot_fig15.py
 ```
 python3 src/plot_time.py
 ```
+3. To generate Feature Importance figure or the ROC curve in the Extensions, use `src/feature_importance_XGBoost.py`
