@@ -92,6 +92,12 @@ All three extension models can be found in the `src/extensions.py` script.
 python3 src/extensions.py
 ```
 
+To generate predictions on the given test set using XGBoost (batch 13, 18, and 15), use
+```
+python3 src/generate_ML_preds.py
+```
+
+
 ## Visualization
 1. Reproduction of Figure 15 (Conciseness) from the paper
 
