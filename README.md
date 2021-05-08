@@ -83,6 +83,10 @@ python3 src/stability.py
 
 All three extension models can be found in the `src/extensions.py` script.
 
+```
+python3 src/extensions.py
+```
+
 ## Visualization
 1. To generate figure 15 
 
@@ -94,4 +98,8 @@ python3 src/plot_fig15.py
 ```
 python3 src/plot_time.py
 ```
-3. To generate Feature Importance figure or the ROC curve in the Extensions, use `src/feature_importance_XGBoost.py`
+3. To generate Feature Importance figure or the ROC curve in the Extensions
+
+```
+python3 src/feature_importance_XGBoost.py
+```
