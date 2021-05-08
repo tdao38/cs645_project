@@ -93,17 +93,17 @@ python3 src/extensions.py
 ```
 
 ## Visualization
-1. To generate figure 15 
+1. Reproduction of Figure 15 (Conciseness) from the paper
 
 ```
 python3 src/plot_fig15.py
 ```
-2. To generate feature vs time plots
+2. Features against time plots
 
 ```
 python3 src/plot_time.py
 ```
-3. To generate Feature Importance figure or the ROC curve in the Extensions
+3. Feature Importance figure or the ROC curve in the Extensions
 
 ```
 python3 src/feature_importance_XGBoost.py
