@@ -59,27 +59,32 @@ python3 src/aggregated_data_creation.py
 ```
 
 ## Main implementation
-1. Since each training batch has a separate prediction batch and using different threshold of features, we use 3 different scripts to train and predict each batch:
+**1. Training the logical model**
 
+Since each training batch has a separate prediction batch and using different threshold of features, we use 3 different scripts to train and predict each batch:
 
-Train batch 17, predict batch 13
+- Train batch 17, predict batch 13
 ```
 python3 src/prediction_batch_1713.py
 ```
-Train batch 19, predict batch 18
+- Train batch 19, predict batch 18
 ```
 python3 src/prediction_batch_1918.py
 ```
-Train batch 20, predict batch 15
+- Train batch 20, predict batch 15
 ```
 python3 src/prediction_batch_2015.py
 ```
 
-2. Stability - the results can be found in data/stability folder 
+**2. Stability table **
+
+The results can be found in `data/stability` folder 
+
 ```
 python3 src/stability.py
 ```
-3. Extension
+
+**3. Extension**
 
 All three extension models can be found in the `src/extensions.py` script.
 
